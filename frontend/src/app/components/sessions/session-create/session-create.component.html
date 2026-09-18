@@ -1,0 +1,48 @@
+<div class="form-page">
+  <div class="page-header">
+    <h1 class="page-title">Create Session</h1>
+    <p class="page-sub">Schedule a new live class for students to book.</p>
+  </div>
+
+  <div class="form-card">
+    <div class="form-error" *ngIf="errorMessage">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="submit()">
+      <div class="form-group">
+        <label class="form-label">Title <span class="req">*</span></label>
+        <input class="form-input" type="text" [(ngModel)]="title" name="title" placeholder="e.g. Intro to Linear Algebra" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-input form-textarea" [(ngModel)]="description" name="description" rows="3" placeholder="What will this session cover?"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Start Time <span class="req">*</span></label>
+        <input class="form-input" type="datetime-local" [(ngModel)]="startTime" name="startTime" required>
+      </div>
+
+      <div class="form-row two-col">
+        <div class="form-group">
+          <label class="form-label">Duration, minutes, max 60 <span class="req">*</span></label>
+          <input class="form-input" type="number" [(ngModel)]="durationMinutes" name="durationMinutes" min="1" max="60" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Capacity, max 100 <span class="req">*</span></label>
+          <input class="form-input" type="number" [(ngModel)]="capacity" name="capacity" min="1" max="100" required>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-submit" [disabled]="submitting">
+          <span *ngIf="!submitting"><i class="fa-solid fa-calendar-plus"></i> Create Session</span>
+          <span *ngIf="submitting" class="spinner-sm"></span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

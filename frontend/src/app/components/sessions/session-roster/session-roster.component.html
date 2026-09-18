@@ -1,0 +1,49 @@
+<div class="roster-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Session Roster</h1>
+      <p class="page-sub">Everyone hosting or attending this session.</p>
+    </div>
+    <a routerLink="/sessions" class="back-link">
+      <i class="fa-solid fa-arrow-left"></i> Back to Sessions
+    </a>
+  </div>
+
+  <div *ngIf="loading" class="roster-card">
+    <div class="skeleton-wrap">
+      <div class="skeleton-row" *ngFor="let i of [1,2,3]">
+        <div class="skeleton-avatar"></div>
+        <div style="flex: 1;">
+          <div class="skeleton-line name"></div>
+          <div class="skeleton-line email"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && forbidden" class="empty-state">
+    <div class="icon-badge red lg"><i class="fa-solid fa-lock"></i></div>
+    <p>Only the session host can view this roster.</p>
+  </div>
+
+  <div *ngIf="!loading && !forbidden && errorMessage" class="empty-state">
+    <div class="icon-badge red lg"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!loading && !forbidden && !errorMessage && roster.length === 0" class="empty-state">
+    <div class="icon-badge blue lg"><i class="fa-solid fa-user-slash"></i></div>
+    <p>No one has booked this session yet.</p>
+  </div>
+
+  <div class="roster-card" *ngIf="!loading && !forbidden && !errorMessage && roster.length > 0">
+    <div class="roster-row" *ngFor="let member of roster">
+      <div class="roster-avatar">{{ getInitials(member.name) }}</div>
+      <div class="roster-info">
+        <div class="roster-name">{{ member.name }}</div>
+        <div class="roster-email">{{ member.email }}</div>
+      </div>
+      <span class="role-badge" [ngClass]="roleClass(member.role)">{{ member.role }}</span>
+    </div>
+  </div>
+</div>

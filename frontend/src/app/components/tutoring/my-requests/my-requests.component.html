@@ -1,0 +1,51 @@
+<div class="requests-page">
+  <div class="page-header">
+    <h1 class="page-title">My Tutoring Requests</h1>
+    <p class="page-sub">Requests you've made and sessions you've accepted to tutor.</p>
+  </div>
+
+  <div *ngIf="loading" class="skeleton-wrap">
+    <div class="skeleton-card" *ngFor="let i of [1,2,3]">
+      <div class="skeleton-title"></div>
+      <div class="skeleton-meta"></div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && requests.length === 0" class="empty-state">
+    <div class="icon-badge purple lg"><i class="fa-solid fa-list-check"></i></div>
+    <p>You haven't requested or accepted any tutoring sessions yet.</p>
+  </div>
+
+  <div class="request-card" *ngFor="let request of requests">
+    <div class="request-card__row">
+      <div class="request-card__title">
+        <h3>{{ request.topic }}</h3>
+        <span class="role-badge" [ngClass]="'role-badge--' + roleLabel(request).toLowerCase().split(' ').join('-')">
+          {{ roleLabel(request) }}
+        </span>
+      </div>
+      <span class="request-card__status" [ngClass]="'request-card__status--' + request.status">
+        {{ statusLabel(request.status) }}
+      </span>
+    </div>
+    <p class="request-card__meta">Created {{ request.createdAt | date:'medium' }}</p>
+
+    <button *ngIf="canConfirm(request)"
+            class="btn-confirm"
+            [disabled]="confirmingId === request._id || hasUserConfirmed(request)"
+            (click)="openConfirmDialog(request)">
+      <span *ngIf="confirmingId === request._id" class="spinner-sm"></span>
+      <i *ngIf="confirmingId !== request._id" class="fa-solid" [class.fa-check-double]="hasUserConfirmed(request)" [class.fa-circle-check]="!hasUserConfirmed(request)"></i>
+      {{ confirmingId === request._id ? 'Confirming...' : (hasUserConfirmed(request) ? 'Session confirmed' : 'Confirm session happened') }}
+    </button>
+  </div>
+
+  <app-confirm-dialog
+    [open]="dialogOpen"
+    title="Confirm this session?"
+    message="This tells the other party the session took place. If both sides confirm, 1 credit transfers to the tutor."
+    confirmLabel="Yes, confirm"
+    (confirmed)="proceedConfirm()"
+    (cancelled)="cancelConfirm()">
+  </app-confirm-dialog>
+</div>

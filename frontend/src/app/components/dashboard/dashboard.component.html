@@ -1,0 +1,158 @@
+<div class="dash-page">
+  <div *ngIf="loading" class="skeleton-wrap">
+    <div class="skeleton-card" *ngFor="let i of [1,2,3]">
+      <div class="skeleton-title"></div>
+      <div class="skeleton-desc"></div>
+      <div class="skeleton-meta"></div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!loading && userProfile">
+    <div class="hero-card">
+      <div class="topbar">
+        <div class="topbar-left">
+          <p class="greeting-label">Good day <i class="fa-solid fa-sparkles icon-sparkle"></i></p>
+          <h1 class="greeting-name">Welcome, <em>{{ userProfile.name }}</em></h1>
+          <p class="greeting-sub">Here's everything happening in your learning space.</p>
+        </div>
+        <div class="topbar-right-box">
+          <div class="topbar-actions">
+            <span class="role-chip" [class.instructor]="userProfile.isInstructor">
+              <i [class]="userProfile.isInstructor ? 'fa-solid fa-graduation-cap' : 'fa-solid fa-book-open'"></i>
+              {{ userProfile.isInstructor ? 'Instructor' : 'Student' }}
+            </span>
+            <a routerLink="/sessions" class="btn-action" [class.btn-action-dark]="userProfile.isInstructor">
+              <i class="fa-solid fa-video btn-icon"></i> {{ userProfile.isInstructor ? 'Manage Sessions' : 'Browse Sessions' }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <ng-container *ngIf="!userProfile.isInstructor">
+        <div class="stat-card orange">
+          <div class="stat-top">
+            <div class="icon-badge amber"><i class="fa-solid fa-wallet"></i></div>
+            <span class="stat-pill orange-pill">Credit Balance</span>
+          </div>
+          <div class="stat-number">{{ userProfile.creditBalance }}</div>
+          <div class="stat-label">Available Credits</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-top">
+            <div class="icon-badge purple"><i class="fa-solid fa-calendar-days"></i></div>
+            <span class="stat-pill purple-pill">Sessions</span>
+          </div>
+          <div class="stat-number">{{ upcomingSessions.length }}</div>
+          <div class="stat-label">Upcoming for you</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-top">
+            <div class="icon-badge emerald"><i class="fa-solid fa-handshake-angle"></i></div>
+            <span class="stat-pill green-pill">Confirmations</span>
+          </div>
+          <div class="stat-number">{{ pendingConfirmations.length }}</div>
+          <div class="stat-label">Awaiting your confirmation</div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="userProfile.isInstructor">
+        <div class="stat-card orange">
+          <div class="stat-top">
+            <div class="icon-badge amber"><i class="fa-solid fa-chalkboard-user"></i></div>
+            <span class="stat-pill orange-pill">Hosted</span>
+          </div>
+          <div class="stat-number">{{ hostedSessionsCount }}</div>
+          <div class="stat-label">Sessions you host</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-top">
+            <div class="icon-badge purple"><i class="fa-solid fa-calendar-days"></i></div>
+            <span class="stat-pill purple-pill">Upcoming</span>
+          </div>
+          <div class="stat-number">{{ upcomingSessions.length }}</div>
+          <div class="stat-label">Scheduled ahead</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-top">
+            <div class="icon-badge emerald"><i class="fa-solid fa-users"></i></div>
+            <span class="stat-pill green-pill">Bookings</span>
+          </div>
+          <div class="stat-number">{{ totalBookings }}</div>
+          <div class="stat-label">Total attendees</div>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="content-grid">
+      <section>
+        <div class="section-top">
+          <h2 class="section-heading">Upcoming Sessions</h2>
+          <span class="section-count">{{ upcomingSessions.length }}</span>
+        </div>
+
+        <div *ngIf="upcomingSessions.length === 0" class="empty-state">
+          <div class="icon-badge blue lg"><i class="fa-solid fa-inbox"></i></div>
+          <p>No upcoming sessions yet.</p>
+        </div>
+
+        <div class="sessions-grid" *ngIf="upcomingSessions.length > 0">
+          <div *ngFor="let s of upcomingSessions; let i = index"
+               class="session-card"
+               [style.animation-delay]="(i * 0.07) + 's'">
+            <div class="sc-inner">
+              <div class="sc-top">
+                <span class="type-chip" [class.peer]="s.type === 'PeerTutoring'">
+                  <i [class]="s.type === 'PeerTutoring' ? 'fa-solid fa-users-rectangle' : 'fa-solid fa-chalkboard-user'"></i>
+                  {{ s.type === 'PeerTutoring' ? 'Peer Tutoring' : 'Live Class' }}
+                </span>
+                <span class="avail" *ngIf="isHostOf(s)">Hosting</span>
+              </div>
+              <h3 class="sc-title">{{ s.title }}</h3>
+              <div class="sc-meta">
+                <span><i class="fa-regular fa-clock icon-sub"></i> {{ s.startTime | date:'medium' }}</span>
+                <span><i class="fa-solid fa-stopwatch icon-sub"></i> {{ s.durationMinutes }} min</span>
+                <span><i class="fa-solid fa-users icon-sub"></i> {{ s.attendeeIds.length }}/{{ s.capacity }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <a routerLink="/sessions" class="widget__link">View all sessions</a>
+      </section>
+
+      <div class="right-col" *ngIf="!userProfile.isInstructor">
+        <section class="tip-card" *ngIf="pendingConfirmations.length > 0">
+          <div class="section-top">
+            <h2 class="section-heading">Pending Confirmations</h2>
+          </div>
+          <div class="request-card" *ngFor="let r of pendingConfirmations">
+            <p class="req-title">{{ r.topic }}</p>
+            <p class="rc-sub">You're acting as {{ roleInRequest(r) }}</p>
+          </div>
+          <a routerLink="/tutoring/mine" class="widget__link">Confirm now</a>
+        </section>
+
+        <section class="tip-card">
+          <div class="section-top">
+            <h2 class="section-heading">Tutoring Requests</h2>
+          </div>
+          <ul class="widget__stats">
+            <li>Open: {{ tutoringStats.open }}</li>
+            <li>Scheduled: {{ tutoringStats.accepted }}</li>
+            <li>Completed: {{ tutoringStats.confirmed }}</li>
+            <li>Expired: {{ tutoringStats.expired }}</li>
+          </ul>
+          <a routerLink="/tutoring/mine" class="widget__link">View my requests</a>
+        </section>
+      </div>
+    </div>
+
+    <button (click)="logout()" class="btn-cancel dash-logout">
+      <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </button>
+  </ng-container>
+
+  <p *ngIf="errorMsg" class="error-text">{{ errorMsg }}</p>
+</div>

@@ -1,0 +1,72 @@
+.directory-page { max-width: 720px; margin: 0 auto; }
+
+.page-header { margin-bottom: 24px; }
+.page-title { font-size: 26px; font-weight: 900; color: #111827; letter-spacing: -0.6px; }
+.page-sub { font-size: 14px; color: #6B7280; margin-top: 4px; }
+
+.directory-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+  padding: 8px 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+  animation: fadeInUp 0.4s ease both;
+}
+
+.dir-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid #F3F4F6;
+}
+.dir-row:last-child { border-bottom: none; }
+.dir-avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: linear-gradient(135deg, #FF6B35, #F97316);
+  color: #FFFFFF;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.25);
+}
+.dir-info { flex: 1; min-width: 0; }
+.dir-name { font-size: 15px; font-weight: 700; color: #111827; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dir-email { font-size: 12px; color: #6B7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.role-badge {
+  font-size: 11px; font-weight: 800;
+  padding: 5px 14px; border-radius: 50px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.role-badge--instructor { background: #EDE9FE; color: #6D28D9; }
+.role-badge--student    { background: #EFF6FF; color: #2563EB; }
+
+/* ===== Skeleton / empty ===== */
+.skeleton-wrap { display: flex; flex-direction: column; }
+.skeleton-row { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid #F3F4F6; }
+.skeleton-row:last-child { border-bottom: none; }
+.skeleton-avatar {
+  width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(90deg, rgba(229,231,235,0.6) 25%, rgba(243,244,246,0.8) 50%, rgba(229,231,235,0.6) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear;
+}
+.skeleton-line { border-radius: 4px; background: linear-gradient(90deg, rgba(229,231,235,0.6) 25%, rgba(243,244,246,0.8) 50%, rgba(229,231,235,0.6) 75%); background-size: 200% 100%; animation: shimmer 2s infinite linear; }
+.skeleton-line.name { height: 14px; width: 40%; margin-bottom: 8px; }
+.skeleton-line.email { height: 11px; width: 55%; }
+
+.empty-state {
+  text-align: center; padding: 48px 20px;
+  color: #9CA3AF; font-size: 14px; font-weight: 600;
+  background: #FFFFFF; border-radius: 20px; border: 1px solid #E5E7EB;
+}
+.icon-badge.lg { width: 56px; height: 56px; font-size: 22px; margin: 0 auto 10px; }
+
+@media (max-width: 480px) {
+  .dir-row { align-items: flex-start; }
+  .role-badge { margin-top: 4px; }
+}

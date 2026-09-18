@@ -1,0 +1,41 @@
+<div class="requests-page">
+  <div class="page-header">
+    <h1 class="page-title">Accept Requests</h1>
+    <p class="page-sub">Open tutoring requests from other students.</p>
+  </div>
+
+  <div *ngIf="loading" class="skeleton-wrap">
+    <div class="skeleton-card" *ngFor="let i of [1,2,3]">
+      <div class="skeleton-title"></div>
+      <div class="skeleton-meta"></div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && requests.length === 0" class="empty-state">
+    <div class="icon-badge amber lg"><i class="fa-solid fa-inbox"></i></div>
+    <p>No open requests right now.</p>
+  </div>
+
+  <div class="request-card" *ngFor="let request of requests">
+    <div class="rc-top">
+      <div class="rc-icon"><i class="fa-solid fa-hand"></i></div>
+      <span class="rc-title">{{ request.topic }}</span>
+    </div>
+    <p class="rc-meta">Requested by {{ learnerName(request) }}</p>
+
+    <div class="rc-form">
+      <div class="rc-field">
+        <label>Start Time</label>
+        <input type="datetime-local" [(ngModel)]="startTime[request._id]" name="startTime-{{request._id}}">
+      </div>
+      <div class="rc-field">
+        <label>Duration, min</label>
+        <input type="number" placeholder="e.g. 30" [(ngModel)]="durationMinutes[request._id]" name="duration-{{request._id}}" min="1" max="60">
+      </div>
+      <button class="btn-accept" [disabled]="acceptingId === request._id" (click)="accept(request)">
+        <i class="fa-solid fa-check"></i>
+        {{ acceptingId === request._id ? 'Accepting...' : 'Accept' }}
+      </button>
+    </div>
+  </div>
+</div>

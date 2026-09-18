@@ -1,0 +1,81 @@
+<div class="sessions-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Sessions</h1>
+      <p class="page-sub">
+        {{ currentUser?.isInstructor ? 'Manage the live classes you host.' : 'Browse and book upcoming sessions.' }}
+      </p>
+    </div>
+    <a *ngIf="currentUser?.isInstructor" routerLink="/sessions/new" class="btn-primary">
+      <i class="fa-solid fa-plus"></i> Create Session
+    </a>
+  </div>
+
+  <div *ngIf="loading" class="skeleton-wrap">
+    <div class="skeleton-card" *ngFor="let i of [1,2,3]">
+      <div class="skeleton-title"></div>
+      <div class="skeleton-desc"></div>
+      <div class="skeleton-meta"></div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && visibleSessions.length === 0" class="empty-state">
+    <div class="icon-badge blue lg"><i class="fa-solid fa-calendar-xmark"></i></div>
+    <p>No upcoming sessions yet.</p>
+  </div>
+
+  <div class="session-grid" *ngIf="!loading && visibleSessions.length > 0">
+    <div class="session-card" *ngFor="let session of visibleSessions; let i = index"
+         [class.full]="session.isFull"
+         [style.animation-delay]="(i * 0.06) + 's'">
+      <div class="sc-inner">
+        <div class="sc-top">
+          <span class="type-chip" [class.peer]="session.type === 'PeerTutoring'">
+            <i [class]="session.type === 'PeerTutoring' ? 'fa-solid fa-users-rectangle' : 'fa-solid fa-chalkboard-user'"></i>
+            {{ session.type === 'PeerTutoring' ? 'Peer Tutoring' : 'Live Class' }}
+          </span>
+          <span *ngIf="session.isFull" class="full-pill">Full</span>
+          <span *ngIf="!session.isFull && isHost(session)" class="host-pill">Hosting</span>
+        </div>
+
+        <h3 class="sc-title">{{ session.title }}</h3>
+        <p class="sc-desc" *ngIf="session.description">{{ session.description }}</p>
+
+        <div class="sc-meta">
+          <span><i class="fa-regular fa-clock icon-sub"></i> {{ session.startTime | date:'medium' }}</span>
+          <span><i class="fa-solid fa-stopwatch icon-sub"></i> {{ session.durationMinutes }} min</span>
+          <span><i class="fa-solid fa-users icon-sub"></i> {{ session.attendeeIds.length }}/{{ session.capacity }}</span>
+        </div>
+
+        <p class="sc-meet" *ngIf="isHost(session) || isBooked(session)">
+          <ng-container *ngIf="session.meetLink; else noMeet">
+            <a [href]="session.meetLink" target="_blank">
+              <i class="fa-brands fa-google"></i> Join Google Meet
+            </a>
+          </ng-container>
+          <ng-template #noMeet>
+            <span class="sc-meet-pending">Meeting link not available yet, check back shortly.</span>
+          </ng-template>
+        </p>
+      </div>
+
+      <div class="sc-actions">
+        <button *ngIf="isHost(session)" class="btn-secondary" (click)="viewRoster(session)">
+          <i class="fa-solid fa-list-ul"></i> View Roster
+        </button>
+
+        <button *ngIf="!isHost(session) && !isBooked(session) && !session.isFull"
+                class="btn-primary"
+                [disabled]="bookingId === session._id"
+                (click)="book(session)">
+          <i class="fa-solid fa-calendar-check"></i>
+          {{ bookingId === session._id ? 'Booking...' : 'Book Session' }}
+        </button>
+
+        <span *ngIf="isBooked(session) && !isHost(session)" class="sc-status">
+          <i class="fa-solid fa-circle-check"></i> You're booked
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

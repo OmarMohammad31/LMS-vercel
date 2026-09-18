@@ -1,0 +1,521 @@
+{
+  "info": {
+    "_postman_id": "7f563b62-64d8-4d29-a35f-6b6fbc788e44",
+    "name": "LMS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52916896"
+  },
+  "item": [
+    {
+      "name": "Health check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}",
+          "host": [
+            "{{baseURL}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "register student",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "// {\r\n//     \"name\": \"Omar Mohamed\", \r\n//     \"email\": \"omaryousef3132@gmail.com\",\r\n//     \"password\": \"123456789\"\r\n// }\r\n\r\n{\r\n    \"name\": \"Ahmed Mohamed\", \r\n    \"email\": \"ahmedyousef3132@gmail.com\",\r\n    \"password\": \"123456789\"\r\n}\r\n\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/auth/register",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "register instructor",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Ali Mohamed\",\r\n    \"email\": \"AliMohamed@gmail.com\",\r\n    \"password\": \"123456789\",\r\n    \"isInstructor\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/auth/register",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "login student",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set(\"tokenStudent\", pm.response.json().token);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"omaryousef3132@gmail.com\",\r\n    \"password\": \"123456789\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/auth/login",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "login instructor",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set(\"tokenInstructor\", pm.response.json().token);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"AliMohamed@gmail.com\",\r\n    \"password\": \"123456789\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/auth/login",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{tokenStudent}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseURL}}/users/me",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "users",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create session",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set(\"sessionId\", pm.response.json()._id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{tokenInstructor}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\":\"Math\",\r\n    \"startTime\":\"2026-07-30T04:40:00Z\",\r\n    \"durationMinutes\":30,\r\n    \"capacity\": 3\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/sessions",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "sessions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List sessions logged as student",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{tokenStudent}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseURL}}/sessions",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "sessions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List sessions logged as instructor",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{tokenStudent}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseURL}}/sessions",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "sessions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Book session",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{tokenStudent}}",
+            "type": "text"
+          },
+          {
+            "key": "",
+            "value": "",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/sessions/{{sessionId}}/book",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "sessions",
+            "{{sessionId}}",
+            "book"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Roster",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{tokenInstructor}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseURL}}/sessions/{{sessionId}}/roster",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "sessions",
+            "{{sessionId}}",
+            "roster"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create tutoring request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set(\"reqId\", pm.response.json()._id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{tokenStudent}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"topic\":\"Algebra\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/tutoring-requests",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "tutoring-requests"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List tutoring requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{tokenStudent2}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseURL}}/tutoring-requests",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "tutoring-requests"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Accept request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{tokenStudent2}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"startTime\":\"2026-08-01T09:00:00Z\",\r\n    \"durationMinutes\":30\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/tutoring-requests/{{reqId}}/accept",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "tutoring-requests",
+            "{{reqId}}",
+            "accept"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Confirm",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{tokenStudent2}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseURL}}/tutoring-requests/{{reqId}}/confirm",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "tutoring-requests",
+            "{{reqId}}",
+            "confirm"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseURL",
+      "value": ""
+    },
+    {
+      "key": "tokenStudent",
+      "secret": true
+    },
+    {
+      "key": "tokenInstructor",
+      "secret": true
+    },
+    {
+      "key": "token",
+      "secret": true
+    },
+    {
+      "key": "sessionId",
+      "value": ""
+    },
+    {
+      "key": "reqId",
+      "value": ""
+    },
+    {
+      "key": "tokenStudent2",
+      "secret": true
+    }
+  ]
+}

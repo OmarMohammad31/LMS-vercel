@@ -1,0 +1,76 @@
+<div class="app-shell">
+  <div class="dash-bg" *ngIf="authService.isLoggedIn()">
+    <div class="dash-orb dash-orb-1"></div>
+    <div class="dash-orb dash-orb-2"></div>
+  </div>
+
+  <ng-container *ngIf="authService.isLoggedIn(); else authLayout">
+    <button class="mobile-toggle" (click)="menuOpen = !menuOpen">
+      <i class="fa-solid" [class.fa-bars]="!menuOpen" [class.fa-xmark]="menuOpen"></i>
+    </button>
+
+    <aside class="sidebar" [class.sidebar--open]="menuOpen">
+      <div class="logo">
+        <div class="logo-mark"><i class="fa-solid fa-graduation-cap"></i></div>
+        <span class="logo-name">LMS<span>Portal</span></span>
+      </div>
+
+      <p class="nav-section">Menu</p>
+      <nav class="nav-items">
+        <a routerLink="/dashboard" routerLinkActive="active" class="nav-link" (click)="menuOpen = false">
+          <i class="fa-solid fa-chart-pie ni"></i> Dashboard
+        </a>
+        <a routerLink="/sessions" routerLinkActive="active" class="nav-link" (click)="menuOpen = false">
+          <i class="fa-solid fa-video ni"></i> Sessions
+        </a>
+        <ng-container *ngIf="currentUser && !currentUser.isInstructor">
+          <a routerLink="/tutoring/new" routerLinkActive="active" class="nav-link" (click)="menuOpen = false">
+            <i class="fa-solid fa-hand ni"></i> Request Tutoring
+          </a>
+          <a routerLink="/tutoring/open" routerLinkActive="active" class="nav-link" (click)="menuOpen = false">
+            <i class="fa-solid fa-user-graduate ni"></i> Accept Requests
+          </a>
+          <a routerLink="/tutoring/mine" routerLinkActive="active" class="nav-link" (click)="menuOpen = false">
+            <i class="fa-solid fa-list-check ni"></i> My Requests
+          </a>
+        </ng-container>
+        <a routerLink="/directory" routerLinkActive="active" class="nav-link" (click)="menuOpen = false">
+          <i class="fa-solid fa-address-book ni"></i> Directory
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom" *ngIf="currentUser">
+        <div class="sb-user">
+          <div class="sb-avatar">{{ getInitials(currentUser.name) }}</div>
+          <div class="sb-info">
+            <div class="sb-name">{{ currentUser.name }}</div>
+            <div class="sb-sub">
+              <span class="sb-role">{{ currentUser.isInstructor ? 'Instructor' : 'Student' }}</span>
+              <ng-container *ngIf="!currentUser.isInstructor">
+                <span class="sb-dot">&bull;</span>
+                <span class="sb-credit"><i class="fa-solid fa-wallet icon-gold"></i> {{ currentUser.creditBalance }}</span>
+              </ng-container>
+            </div>
+          </div>
+          <button class="sb-logout" (click)="logout()" title="Logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-scrim" *ngIf="menuOpen" (click)="menuOpen = false"></div>
+
+    <main class="app-main">
+      <router-outlet></router-outlet>
+    </main>
+  </ng-container>
+
+  <ng-template #authLayout>
+    <main class="app-main app-main--auth">
+      <router-outlet></router-outlet>
+    </main>
+  </ng-template>
+
+  <app-toast></app-toast>
+</div>

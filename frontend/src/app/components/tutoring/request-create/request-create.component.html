@@ -1,0 +1,32 @@
+<div class="form-page">
+  <div class="page-header">
+    <h1 class="page-title">Request Tutoring</h1>
+    <p class="page-sub">Ask another student for help on a topic.</p>
+  </div>
+
+  <div class="form-card">
+    <div class="form-error" *ngIf="errorMessage">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="submit()">
+      <div class="form-group">
+        <label class="form-label">Topic <span style="color:#EF4444;">*</span></label>
+        <input class="form-input" type="text" [(ngModel)]="topic" name="topic" placeholder="e.g. Linear Algebra" required>
+      </div>
+
+      <div class="form-hint">
+        <i class="fa-solid fa-circle-info"></i>
+        Costs 1 credit. You can only have one open request at a time.
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-submit" [disabled]="submitting">
+          <span *ngIf="!submitting"><i class="fa-solid fa-hand"></i> Submit Request</span>
+          <span *ngIf="submitting" class="spinner-sm"></span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
