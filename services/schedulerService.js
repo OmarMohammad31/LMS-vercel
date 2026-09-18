@@ -4,7 +4,7 @@ const Session = require('../models/Session');
 const CONFIRMATION_WINDOW_HOURS = 48;
 const CHECK_INTERVAL_MS = 5 * 60 * 1000; // every 5 minutes
 
-// FR3.7/3.8: once the linked session's end time has passed, set a
+// Once the linked session's end time has passed, set a
 // confirmationDeadline so the frontend knows to prompt both sides.
 async function markEligibleForConfirmation() {
   const accepted = await TutoringRequest.find({ status: 'accepted', confirmationDeadline: null })
@@ -21,8 +21,7 @@ async function markEligibleForConfirmation() {
   }
 }
 
-// FR3.10-adjacent: if the confirmation window passed without both sides
-// confirming, mark expired. No balance change (nothing was ever deducted).
+// If the confirmation window passed without both sides confirming, mark expired.
 async function expireStaleRequests() {
   await TutoringRequest.updateMany(
     { status: 'accepted', confirmationDeadline: { $lt: new Date() } },
@@ -30,15 +29,19 @@ async function expireStaleRequests() {
   );
 }
 
+async function runOnce() {
+  await markEligibleForConfirmation();
+  await expireStaleRequests();
+}
+
 function startScheduler() {
   setInterval(async () => {
     try {
-      await markEligibleForConfirmation();
-      await expireStaleRequests();
+      await runOnce();
     } catch (err) {
       console.error('Scheduler error:', err.message);
     }
   }, CHECK_INTERVAL_MS);
 }
 
-module.exports = { startScheduler };
+module.exports = { startScheduler, runOnce };
