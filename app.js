@@ -4,6 +4,7 @@ const userRoutes = require('./routes/userRoutes');
 const sessionRoutes = require('./routes/sessionRoutes');
 const tutoringRoutes = require('./routes/tutoringRoutes');
 const errorHandler = require('./middleware/errorHandler');
+const connectDB = require('./config/db');
 
 const app = express();
 app.use(express.json());
@@ -21,6 +22,15 @@ app.use((req, res, next) => {
 });
 
 app.get('/', (req, res) => res.json({ status: 'ok' })); // health check
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
